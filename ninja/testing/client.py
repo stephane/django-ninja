@@ -95,7 +95,6 @@ class NinjaClientBase:
         request.method = method
         request.path = path
         request.body = ""
-        request.COOKIES = request_params.pop("COOKIES", {})
         request._dont_enforce_csrf_checks = True
         request.is_secure.return_value = False
         request.build_absolute_uri = build_absolute_uri
@@ -103,9 +102,9 @@ class NinjaClientBase:
         if "user" not in request_params:
             request.user.is_authenticated = False
 
-        request.META = request_params.pop("META", {})
+        request.COOKIES = request_params.pop("COOKIES", {})
         request.FILES = request_params.pop("FILES", {})
-
+        request.META = request_params.pop("META", {})
         request.META.update(
             dict(
                 [
