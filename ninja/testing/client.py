@@ -95,7 +95,7 @@ class NinjaClientBase:
         request.method = method
         request.path = path
         request.body = ""
-        request.COOKIES = {}
+        request.COOKIES = request_params.pop("COOKIES", {})
         request._dont_enforce_csrf_checks = True
         request.is_secure.return_value = False
         request.build_absolute_uri = build_absolute_uri
