@@ -4,24 +4,32 @@ from ninja.testing import TestClient
 api = NinjaAPI()
 
 # testing Body marker:
+client = TestClient(api)
 
 
-@api.post("/task")
-def create_task(request, start: int = Body(...), end: int = Body(...)):
+@api.post("/body")
+def create_body(request, start: int = Body(...)):
+    return [start]
+
+
+@api.post("/bodies")
+def create_bodies(request, start: int = Body(...), end: int = Body(...)):
     return [start, end]
 
 
-@api.post("/task2")
-def create_task2(request, start: int = Body(2), end: int = Form(1)):
+@api.post("/body-form")
+def create_body_form(request, start: int = Body(2), end: int = Form(1)):
     return [start, end]
 
 
-def test_body():
-    client = TestClient(api)
-    assert client.post("/task", json={"start": 1, "end": 2}).json() == [1, 2]
+def test_one_body():
+    assert client.post("/body", json={"start": 1}).json() == [1]
+
+
+def test_two_bodies():
+    assert client.post("/bodies", json={"start": 1, "end": 2}).json() == [1, 2]
 
 
 def test_body_form():
-    client = TestClient(api)
-    assert client.post("/task2", POST={"start": "1", "end": "2"}).json() == [1, 2]
-    assert client.post("/task2").json() == [2, 1]
+    assert client.post("/body-form", POST={"start": "1", "end": "2"}).json() == [1, 2]
+    assert client.post("/body-form").json() == [2, 1]
